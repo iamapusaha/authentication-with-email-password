@@ -1,7 +1,8 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 
 const Registration = () => {
@@ -11,10 +12,11 @@ const Registration = () => {
     const [showSuccess, setShowSuccess] = useState('')
     const handleRegister = (e) => {
         e.preventDefault()
+        const name = e.target.name.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
         const accepted = e.target.terms.checked;
-        console.log(email, password);
+        console.log(name, email, password);
         setShowError('')
         setShowSuccess('')
         if (password.length <= 5) {
@@ -36,6 +38,17 @@ const Registration = () => {
                 // setUser(logInUser)
                 console.log(logInUser);
                 setShowSuccess('registration successfull')
+                updateProfile(logInUser, {
+                    displayName: name,
+                    photoURL: "https://example.com/jane-q-user/profile.jpg"
+                })
+                    .then(() => {
+                        console.log('profile updated');
+                    })
+                sendEmailVerification(logInUser)
+                    .then(() => {
+                        alert('please go to your email and verified you account');
+                    });
             })
             .catch(error => {
                 console.error(error);
@@ -53,6 +66,16 @@ const Registration = () => {
                 <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
                     <div className="card-body">
                         <form onSubmit={handleRegister}>
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Name</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="name"
+                                    className="input input-bordered" required />
+                            </div>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Email</span>
@@ -75,9 +98,7 @@ const Registration = () => {
                                         }
                                     </span>
                                 </div>
-                                <label className="label">
-                                    <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
-                                </label>
+
                             </div>
                             <div>
                                 <input type="checkbox" name="terms" id="" />
@@ -87,6 +108,7 @@ const Registration = () => {
                                 <button className="btn btn-primary">Register</button>
                             </div>
                         </form>
+                        <p>Already have an account? <Link to='/login'>Sign In</Link></p>
                         {
                             showSuccess && <p className="text-center text-green-400">{showSuccess}</p>
                         }
