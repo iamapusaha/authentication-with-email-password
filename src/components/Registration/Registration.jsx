@@ -4,6 +4,7 @@ import { useState } from "react";
 
 
 const Registration = () => {
+    const [show, setShow] = useState(false)
     const [user, setUser] = useState()
     const [showError, setShowError] = useState()
     const [showSuccess, setShowSuccess] = useState()
@@ -50,13 +51,20 @@ const Registration = () => {
                                 <label className="label">
                                     <span className="label-text">Email</span>
                                 </label>
-                                <input type="email" name="email" placeholder="email" className="input input-bordered" required />
+                                <input type="email" name="email" placeholder="email" className="input input-bordered w-3/4" required />
                             </div>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Password</span>
                                 </label>
-                                <input type="password" name="password" placeholder="password" className="input input-bordered" required />
+                                <div className="flex gap-1 items-center">
+                                    <input
+                                        type={show ? 'text' : 'password'}
+                                        name="password"
+                                        placeholder="password"
+                                        className="input input-bordered w-3/4" required />
+                                    <span onClick={() => setShow(!show)}>show</span>
+                                </div>
                                 <label className="label">
                                     <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                                 </label>
