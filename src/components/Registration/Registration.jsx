@@ -6,29 +6,34 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const Registration = () => {
     const [show, setShow] = useState(false)
-    const [user, setUser] = useState()
-    const [showError, setShowError] = useState()
-    const [showSuccess, setShowSuccess] = useState()
+    // const [user, setUser] = useState()
+    const [showError, setShowError] = useState('')
+    const [showSuccess, setShowSuccess] = useState('')
     const handleRegister = (e) => {
         e.preventDefault()
         const email = e.target.email.value;
         const password = e.target.password.value;
+        const accepted = e.target.terms.checked;
         console.log(email, password);
+        setShowError('')
+        setShowSuccess('')
         if (password.length <= 5) {
             setShowError('Password should be at least 6 characters')
             return;
         } else if (!/[A-Z]/.test(password)) {
             setShowError('Password does not contain at least one uppercase letter.')
             return;
+        } else if (!accepted) {
+            setShowError('plase accepted our Terms and Conditions')
+            return;
         }
-        setShowError('')
-        setShowSuccess('')
+
 
         createUserWithEmailAndPassword(auth, email, password)
 
             .then(result => {
                 const logInUser = result.user;
-                setUser(logInUser)
+                // setUser(logInUser)
                 console.log(logInUser);
                 setShowSuccess('registration successfull')
             })
@@ -52,19 +57,19 @@ const Registration = () => {
                                 <label className="label">
                                     <span className="label-text">Email</span>
                                 </label>
-                                <input type="email" name="email" placeholder="email" className="input input-bordered w-11/12" required />
+                                <input type="email" name="email" placeholder="email" className="input input-bordered w-11/12 " required />
                             </div>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Password</span>
                                 </label>
-                                <div className="flex gap-2 items-center">
+                                <div className="flex items-center relative">
                                     <input
                                         type={show ? 'text' : 'password'}
                                         name="password"
                                         placeholder="password"
                                         className="input input-bordered w-11/12" required />
-                                    <span onClick={() => setShow(!show)}>
+                                    <span className="absolute right-8 " onClick={() => setShow(!show)}>
                                         {
                                             show ? <FiEyeOff></FiEyeOff> : <FiEye></FiEye>
                                         }
@@ -73,6 +78,10 @@ const Registration = () => {
                                 <label className="label">
                                     <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                                 </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="terms" id="" />
+                                <label htmlFor="terms"> i agree the <a href=""> Terms and Conditions</a></label>
                             </div>
                             <div className="form-control mt-6 w-11/12">
                                 <button className="btn btn-primary">Register</button>
